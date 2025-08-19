@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drivers</title>
+</head>
+<body>
+<h2>Drivers</h2>
+<a href="{% url 'driver_create' %}">Add Driver</a>
+<table border="1">
+	<tr>
+		<th>Name</th>
+		<th>Phone</th>
+		<th>License Plate</th>
+	</tr>
+	{% for driver in drivers %}
+	<tr>
+		<td>{{ driver.user.username }}</td>
+		<td>{{ driver.phone }}</td>
+		<td>{{ driver.license_plate }}</td>
+	</tr>
+	{% empty %}
+	<tr><td colspan="3">No drivers found</td></tr>
+	{% endfor %}
+</table>
+</body>
+</html>
