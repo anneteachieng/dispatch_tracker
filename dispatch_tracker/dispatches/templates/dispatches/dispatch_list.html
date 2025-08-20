@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Dispatch List</h1>
+<ul>
+    {% for dispatch in dispatches %}
+        <li>
+            {{ dispatch.client.user.username }} → {{ dispatch.status }}
+            <a href="{% url 'dispatch_detail' dispatch.id %}">View</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_dispatch' %}">Create Dispatch</a>
+{% endblock %}
