@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dispatches</title>
+</head>
+<body>
+<h2>Dispatches</h2>
+<a href="{% url 'dispatch_create' %}">Create New Dispatch</a>
+<table border="1">
+    <tr>
+        <th>Client</th>
+        <th>Driver</th>
+        <th>Pickup</th>
+        <th>Dropoff</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    {% for d in dispatches %}
+    <tr>
+        <td>{{ d.client.user.username }}</td>
+        <td>{{ d.driver.user.username }}</td>
+        <td>{{ d.pickup_location }}</td>
+        <td>{{ d.dropoff_location }}</td>
+        <td>{{ d.status }}</td>
+        <td><a href="{% url 'dispatch_update_status' d.id %}">Update Status</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No dispatches found</td></tr>
+    {% endfor %}
+</table>
+</body>
+</html>
