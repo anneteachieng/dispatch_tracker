@@ -6,13 +6,13 @@ from drivers.models import Driver
 class Dispatch(models.Model):
     STATUS_CHOICES = [
             ('pending', 'Pending'),
-            ('in_transit', 'In Transit'),
-            ('delivered', 'Delivered'),
+            ('in_progress', 'In Progress'),
+            ('completed', 'Completed'),
             ('failed', 'Failed'),
             ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, null=True, blank=True)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, null=True, blank=True)
     pickup_location = models.CharField(max_length=255)
     dropoff_location = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
