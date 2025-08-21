@@ -9,3 +9,4 @@ class DispatchAdmin(admin.ModelAdmin):
     #to allow status editing directly from the list page
     
     list_editable = ('status',)
+admin.site.register(Dispatch)
