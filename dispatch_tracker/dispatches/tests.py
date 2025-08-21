@@ -1,4 +1,4 @@
-from django.test import TestCase, Client as TestClient  # Alias to avoid conflict
+from django.test import TestCase, Client as TestClient
 from django.urls import reverse
 from accounts.models import CustomUser
 from .models import Dispatch
@@ -9,19 +9,19 @@ from drivers.models import Driver
 class DispatchTests(TestCase):
     def setUp(self):
         # Set up test client and test data
-        self.test_client = TestClient()  # Renamed to avoid conflict with Client model
+        self.test_client = TestClient()
         # Create a test user (client role) and client
         self.user = CustomUser.objects.create_user(
             username='testuser',
             password='testpass123',
-            role='client'  # Required field
+            role='client'
         )
         self.client_obj = Client.objects.create(user=self.user)
         # Create a test user (driver role) and driver
         self.driver_user = CustomUser.objects.create_user(
             username='driver',
             password='driverpass123',
-            role='driver'  # Required field
+            role='driver'
         )
         self.driver = Driver.objects.create(user=self.driver_user)
         # Create a test dispatch
@@ -35,11 +35,11 @@ class DispatchTests(TestCase):
 
     def test_dispatch_model(self):
         # Test the Dispatch model string representation
-        # Updated to match your actual _str_ (adjust if needed)
         self.assertEqual(str(self.dispatch), f"Dispatch {self.dispatch.id} - {self.dispatch.status}")
 
     def test_dispatch_list_view(self):
         # Test the dispatch list view
+        self.test_client.login(username='testuser', password='testpass123')
         response = self.test_client.get(reverse('dispatch_list'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'dispatches/dispatch_list.html')
@@ -77,10 +77,9 @@ class DispatchTests(TestCase):
         self.assertContains(response, self.dispatch.pickup_location)
 
     def test_dispatch_detail_update_status(self):
-        # Test updating dispatch status
         self.test_client.login(username='testuser', password='testpass123')
         data = {'status': 'IN_PROGRESS'}
         response = self.test_client.post(reverse('dispatch_detail', args=[self.dispatch.id]), data)
-        self.assertEqual(response.status_code, 302)  # Redirect after successful POST
+        self.assertEqual(response.status_code, 302)
         self.dispatch.refresh_from_db()
         self.assertEqual(self.dispatch.status, 'IN_PROGRESS')

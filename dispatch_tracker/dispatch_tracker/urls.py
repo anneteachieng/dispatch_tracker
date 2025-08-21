@@ -23,4 +23,5 @@ urlpatterns = [
     path('clients/', include('clients.urls')),
     path('drivers/', include('drivers.urls') ),
     path('dispatches/', include('dispatches.urls')),
+    path('', include('dispatches.url')),
 ]

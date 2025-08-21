@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <h1>Create Dispatch</h1>
 <form method="post">
@@ -9,6 +8,3 @@
 </form>
 <a href="{% url 'dispatch_list' %}">Back to Dispatch List</a>
 {% endblock %}
-{% extends 'base.html' %}
-{{ form.as_p }}
-{% csrf_token %}
