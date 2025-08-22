@@ -1,8 +1,8 @@
 from django.urls import path
-from .import views
+from . import views
 
 urlpatterns = [
-        path('', views.driver_list, name='driver_list'),
+        path('', views.drivers_list, name='drivers_list'),
         path('new/', views.driver_create, name='driver_create'),
         path('<int:pk>/', views.driver_detail, name='driver_detail'),
         path('<int:pk>/edit/', views.driver_update, name='driver_update'),

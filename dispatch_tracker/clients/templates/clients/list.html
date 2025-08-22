@@ -1,28 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Clients</title>
-</head>
-<body>
-<h2>Clients</h2>
-<a href="{% url 'client_create' %}">Add
-Client</a>
-<table border="1">
-	<tr>
-		<th>Name</th>
-		<th>Phone</th>
-		<th>Location</th>
-	</tr>
+<% extends 'base.html' %>
+<% block content %>
+<h1>Clients</h1>
+<a href="{% url 'client_create' %}">Add Client</a>
+<table>
+	<tr><th>Username</th><th>Email</th><th>Phone</th><th>Location</th><th>Actions</th></tr>
 	{% for client in clients %}
 	<tr>
 		<td>{{ client.user.username }}</td>
+		<td>{{ client.user.email }}</td>
 		<td>{{ client.phone }}</td>
 		<td>{{ client.location }}</td>
+		<td>
+			<a href="{% url 'client_detail' client.pk %}">View</a> |
+			<a href="{% url 'client_update' client.pk %}">Edit</a> |
+			<a href="{% url 'client_dekete' client.pk %}">Delete</a>
+		</td>
 	</tr>
-	{% empty %}
-	<tr><td colspan="3">No clients found</td></tr>
 	{% endfor %}
 </table>
-</body>
-</html>
-
+{% endblock %}

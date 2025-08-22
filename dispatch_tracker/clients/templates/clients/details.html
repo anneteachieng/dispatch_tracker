@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Client Detail</h1>
+<p>Username: {{ client.user.username }}</p>
+<p>Email: {{ client.user.email }}</p>
+<p>Phone: {{ client.phone }}</p>
+<p>Location: {{ client.location }}</p>
+<a href="{% url 'client_update' client.pk %}">Edit</a> |
+<a href="{% url ¨'client_delete' client.pk %}">Delete</a>
+{% endblock %}

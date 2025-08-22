@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Dispatch
-from clients.models import client
+from clients.models import Client
 from drivers.models import Driver
 
 def staff_required(view_func):
@@ -36,11 +36,11 @@ def dispatch_create(requests):
         return redirect('dispacth_list')
     clients = Client.objects.all()
     drivers = Driver.objects.all()
-    return render(request, 'dispatches/create.html', {'clients': clients, 'drivers', drivers})
+    return render(request, 'dispatches/create.html', {'clients': clients, 'drivers': drivers})
 
 @login_required
 @staff_required
-def dispatch_update(request, pk):
+def dispatch_detail(request, pk):
     dispatch = get_object_or_404(Dispatch, pk=pk)
     return render(request, 'dispatches/detail.html', {'dispatch': dispatch})
 

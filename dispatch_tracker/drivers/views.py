@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_requïred
+from django.contrib.auth.decorators import login_required
 from .models import Driver
 from accounts.models import CustomUser
 
@@ -19,7 +19,7 @@ def drivers_list(request):
 @login_required
 @staff_required
 def driver_create(request):
-    if request´.method == 'POST':
+    if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
         password  = request.POST['password']
@@ -43,7 +43,7 @@ def driver_update(request, pk):
     if request.method == 'POST':
         driver.user.username = request.POST['username']
         driver.user.email = request.POST['email']
-        if 'password' in request.POST andrequest.POST['password']:
+        if 'password' in request.POST and request.POST['password']:
             driver.user.set_password(request.POST['password'])
         driver.phone = request.POST['phone']
         driver.license_plate = request.POST['license_plate']

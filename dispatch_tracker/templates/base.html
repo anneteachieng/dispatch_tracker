@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dispatch Tracker</title>
+	<meta charset="UTF-8">
+	<title>Dispatch Tracker</title>
 </head>
 <body>
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/clients/">Clients</a> |
-        <a href="/drivers/">Drivers</a> |
-        <a href="/dispatches/">Dispatches</a> |
-        <a href="/accounts/logout/">Logout</a>
-    </nav>
-    <hr>
-
-    {% block content %}
-    {% endblock %}
+	{% if user.is_authenticated %}
+	<nav>
+		<a href="/">Home</a> |
+		<a href="/clients/">Clients</a> |
+		<a href="/drivers/">Drivers</a> |
+		<a href="/dispatches/">Dispatches</a> |
+		<a href="/accounts/logout/">Logout</a>
+	</nav>
+    <% endif %>
+    {% block content %}{% endblock %}
 </body>
 </html>
