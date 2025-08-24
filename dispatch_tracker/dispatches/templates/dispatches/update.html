@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Update Dispatch</h1>
+<form method="post">
+    {% csrf_token %}
+    <label>Status: <select name="status">
+        <option value="pending" {% if dispatch.status == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="in_transit" {% if dispatch.status == 'in_transit' %}selected{% endif %}>In Transit</option>
+        <option value="delivered" {% if dispatch.status == 'delivered' %}selected{% endif %}>Delivered</option>
+        <option value="failed" {% if dispatch.status == 'failed' %}selected{% endif %}>Failed</option>
+    </select></label><br>
+    <label>Driver: <select name="driver">
+        <option value="">Unassigned</option>
+        {% for driver in drivers %}
+        <option value="{{ driver.id }}" {% if dispatch.driver == driver %}selected{% endif %}>{{ driver.user.username }}</option>
+        {% endfor %}
+    </select></label><br>
+    <button type="submit">Update</button>
+</form>
+{% endblock %}

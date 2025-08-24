@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create Dispatch</h1>
+<form method="post">
+    {% csrf_token %}
+    <label>Client: <select name="client">
+        {% for client in clients %}
+        <option value="{{ client.id }}">{{ client.user.username }}</option>
+        {% endfor %}
+    </select></label><br>
+    <label>Driver (optional): <select name="driver">
+        <option value="">Unassigned</option>
+        {% for driver in drivers %}
+        <option value="{{ driver.id }}">{{ driver.user.username }}</option>
+        {% endfor %}
+    </select></label><br>
+    <label>Pickup Location: <input type="text" name="pickup_location"></label><br>
+    <label>Dropoff Location: <input type="text" name="dropoff_location"></label><br>
+    <button type="submit">Create</button>
+</form>
+{% endblock %}
