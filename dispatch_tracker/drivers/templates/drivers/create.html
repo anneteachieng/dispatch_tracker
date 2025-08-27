@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create Driver</h1>
+<form method="post">
+    {% csrf_token %}
+    <label>Username: <input type="text" name="username"></label><br>
+    <label>Email: <input type="email" name="email"></label><br>
+    <label>Password: <input type="password" name="password"></label><br>
+    <label>Phone: <input type="text" name="phone"></label><br>
+    <label>License Plate: <input type="text" name="license_plate"></label><br>
+    <button type="submit">Create</button>
+</form>
+{% endblock %}
+dispatch_tracker/templates/drivers/detail.html
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Driver Detail</h1>
+<p>Username: {{ driver.user.username }}</p>
+<p>Email: {{ driver.user.email }}</p>
+<p>Phone: {{ driver.phone }}</p>
+<p>License Plate: {{ driver.license_plate }}</p>
+<a href="{% url 'driver_update' driver.pk %}">Edit</a> |
+<a href="{% url 'driver_delete' driver.pk %}">Delete</a>
+{% endblock %}

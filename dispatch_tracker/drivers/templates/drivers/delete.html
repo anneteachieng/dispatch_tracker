@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Driver</h1>
+<p>Are you sure you want to delete {{ driver.user.username }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete</button>
+</form>
+<a href="{% url 'driver_list' %}">Cancel</a>
+{% endblock %}
+dispatch_tracker/templates/dispatches/list.html
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Dispatches</h1>
+<a href="{% url 'dispatch_create' %}">Create Dispatch</a>
+<table>
+    <tr><th>ID</th><th>Client</th><th>Driver</th><th>Pickup</th><th>Dropoff</th><th>Status</th><th>Time</th><th>Actions</th></tr>
+    {% for dispatch in dispatches %}
+    <tr>
+        <td>{{ dispatch.id }}</td>
+        <td>{{ dispatch.client.user.username }}</td>
+        <td>{% if dispatch.driver %}{{ dispatch.driver.user.username }}{% else %}Unassigned{% endif %}</td>
+        <td>{{ dispatch.pickup_location }}</td>
+        <td>{{ dispatch.dropoff_location }}</td>
+        <td>{{ dispatch.status }}</td>
+        <td>{{ dispatch.dispatch_time }}</td>
+        <td>
+            <a href="{% url 'dispatch_detail' dispatch.pk %}">View</a> |
+            <a href="{% url 'dispatch_update' dispatch.pk %}">Update</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
