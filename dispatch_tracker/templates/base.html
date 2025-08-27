@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Dispatch Tracker</title>
+    <meta charset="UTF-8">
+    <title>Dispatch Tracker</title>
 </head>
 <body>
-	{% if user.is_authenticated %}
-	<nav>
-		<a href="/">Home</a> |
-		<a href="/clients/">Clients</a> |
-		<a href="/drivers/">Drivers</a> |
-		<a href="/dispatches/">Dispatches</a> |
-		<a href="/accounts/logout/">Logout</a>
-	</nav>
-    <% endif %>
+    {% if user.is_authenticated %}
+        <nav>
+            <a href="{% url 'dispatch_list' %}">Dispatches</a> |
+            <a href="{% url 'client_list' %}">Clients</a> |
+            <a href="{% url 'driver_list' %}">Drivers</a> |
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    {% endif %}
     {% block content %}{% endblock %}
 </body>
 </html>
