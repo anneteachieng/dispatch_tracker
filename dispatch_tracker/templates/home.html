@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dispatch Tracker - Home</title>
-</head>
-<body>
-    <h1>Welcome to Dispatch Tracker</h1>
-    <p>Use the menu to manage clients, drivers, and dispatches.</p>
-</body>
-<html>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Welcome to Dispatch Tracker!</h1>
+<p>Navigate to your dashboard:</p>
+<ul>
+    <li><a href="/admin/">Admin Dashboard</a></li>
+    <li><a href="/clients/">Client Dashboard</a></li>
+    <li><a href="/drivers/">Driver Dashboard</a></li>
+    <li><a href="/dispatches/">Staff Dashboard</a></li>
+    <li><a href="/accounts/login/">Login</a></li>
+</ul>
+{% endblock %}
