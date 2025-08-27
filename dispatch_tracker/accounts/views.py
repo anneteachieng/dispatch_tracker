@@ -1,22 +1,25 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import AuthenticationForm
+import logging
 
+logger = logging.getLogger(__name__)
 
 def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
-            messages.success(request, f"Welcome {username}!")
-            return redirect('dispatch_list')
+            next_url = request.GET.get('next', 'dispatch_list')  # Default to dispatch_list
+            return redirect(next_url)
         else:
-            return render(request, 'accounts/login.html', {'error': 'Invalid username or password'})
-    return render(request, 'accounts/login.html')
+            logger.error(f"Form errors: {form.errors}")
+            print(f"Form errors: {form.errors}")
+    else:
+        form = AuthenticationForm()
+    return render(request, 'accounts/login.html', {'form': form})
 
-@login_required
 def logout_view(request):
     logout(request)
     return redirect('login')
