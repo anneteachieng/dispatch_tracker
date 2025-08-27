@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Dispatch
 from clients.models import Client
 from drivers.models import Driver
+from .forms import DispatchForm
 
 def staff_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -19,24 +20,15 @@ def dispatch_list(request):
 
 @login_required
 @staff_required
-def dispatch_create(request):  # Fixed typo: requests -> request
+def dispatch_create(request):
     if request.method == 'POST':
-        client_id = request.POST['client']
-        driver_id = request.POST.get('driver', '')  # Fixed: Use .get() for default
-        pickup_location = request.POST['pickup_location']
-        dropoff_location = request.POST['dropoff_location']
-        client = get_object_or_404(Client, id=client_id)
-        driver = get_object_or_404(Driver, id=driver_id) if driver_id else None
-        Dispatch.objects.create(
-            client=client,
-            driver=driver,
-            pickup_location=pickup_location,
-            dropoff_location=dropoff_location
-        )
-        return redirect('dispatch_list')
-    clients = Client.objects.all()
-    drivers = Driver.objects.all()
-    return render(request, 'dispatches/create.html', {'clients': clients, 'drivers': drivers})
+        form = DispatchForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dispatch_list')
+    else:
+        form = DispatchForm()
+    return render(request, 'dispatches/create.html', {'form': form})
 
 @login_required
 @staff_required
@@ -53,6 +45,6 @@ def dispatch_update(request, pk):
         if form.is_valid():
             form.save()
             return redirect('dispatch_list')
-        else:
-            form = DispatchForm(instance=dispatch)
-        return render(request, 'dispatches/update.html', {'form': form, ''dispatch': dispatch})
+    else:
+        form = DispatchForm(instance=dispatch)
+    return render(request, 'dispatches/update.html', {'form': form, 'dispatch': dispatch})

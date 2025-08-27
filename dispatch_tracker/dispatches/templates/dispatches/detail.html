@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<h1>Dispatch Detail</h1>
-<p>ID: {{ dispatch.id }}</p>
-<p>Client: {{ dispatch.client.user.username }}</p>
-<p>Driver: {% if dispatch.driver %}{{ dispatch.driver.user.username }}{% else %}Unassigned{% endif %}</p>
+<h1>Dispatch Details</h1>
+<p>Client: {{ dispatch.client }}</p>
+<p>Driver: {{ dispatch.driver|default:"Unassigned" }}</p>
 <p>Pickup: {{ dispatch.pickup_location }}</p>
 <p>Dropoff: {{ dispatch.dropoff_location }}</p>
 <p>Status: {{ dispatch.status }}</p>
 <p>Time: {{ dispatch.dispatch_time }}</p>
-<a href="{% url 'dispatch_update' dispatch.pk %}">Update</a>
+<a href="{% url 'dispatch_list' %}">Back to List</a>
 {% endblock %}

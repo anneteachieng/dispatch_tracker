@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Dispatch List</h1>
+<a href="{% url 'dispatch_create' %}">Create Dispatch</a>
+<table>
+    <tr>
+        <th>Client</th>
+        <th>Driver</th>
+        <th>Pickup</th>
+        <th>Dropoff</th>
+        <th>Status</th>
+        <th>Time</th>
+    </tr>
+    {% for dispatch in dispatches %}
+    <tr>
+        <td>{{ dispatch.client }}</td>
+        <td>{{ dispatch.driver|default:"Unassigned" }}</td>
+        <td>{{ dispatch.pickup_location }}</td>
+        <td>{{ dispatch.dropoff_location }}</td>
+        <td>{{ dispatch.status }}</td>
+        <td>{{ dispatch.dispatch_time }}</td>
+        <td><a href="{% url 'dispatch_detail' dispatch.pk %}">View</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">No dispatches available.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

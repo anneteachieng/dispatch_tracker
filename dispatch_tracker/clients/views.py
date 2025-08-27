@@ -12,7 +12,7 @@ def staff_required(view_func):
 
 @login_required
 @staff_required
-def clients_list(request):
+def client_list(request):
     clients = Client.objects.all()
     return render(request, "clients/list.html", {"clients": clients})
 

@@ -12,7 +12,7 @@ def staff_required(view_func):
 
 @login_required
 @staff_required
-def drivers_list(request):
+def driver_list(request):
     drivers = Driver.objects.all()
     return render(request, "drivers/list.html", {"drivers": drivers})
 
