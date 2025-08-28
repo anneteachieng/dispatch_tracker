@@ -1,5 +1,5 @@
 from django import forms
-from .models import Driver
+from accounts.models import Driver
 
 class DriverForm(forms.ModelForm):
     class Meta:

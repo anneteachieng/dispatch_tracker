@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Driver
-from .forms import DriverForm
+from accounts.models import Driver
+from accounts.models import DriverForm
 
 def driver_list(request):
     drivers = Driver.objects.all()

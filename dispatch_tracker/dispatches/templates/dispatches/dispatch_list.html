@@ -1,19 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
 <h1>Dispatches</h1>
-<a href="{% url 'dispatch_create' %}">+ New Dispatch</a>
+
 <table>
-  <tr>
-    <th>ID</th>
-    <th>Description</th>
-    <th>Actions</th>
-  </tr>
-  {% for d in dispatches %}
-  <tr>
-    <td>{{ d.id }}</td>
-    <td>{{ d.description }}</td>
-    <td>
-      <a href="{% url 'dispatch_update' d.id %}">Edit</a>
-      <a href="{% url 'dispatch_delete' d.id %}">Delete</a>
-    </td>
-  </tr>
-  {% endfor %}
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+            {% if request.user.role in 'admin staff' %}
+                <th>Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for dispatch in dispatches %}
+        <tr>
+            <td>{{ dispatch.id }}</td>
+            <td>{{ dispatch.description }}</td>
+            <td>{{ dispatch.status }}</td>
+            {% if request.user.role in 'admin staff' %}
+            <td>
+                <a href="{% url 'dispatches:dispatch_update' dispatch.id %}">Edit</a>
+                <a href="{% url 'dispatches:dispatch_delete' dispatch.id %}">Delete</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No dispatches found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+{% if request.user.role in 'admin staff' %}
+<a href="{% url 'dispatches:dispatch_create' %}">Add New Dispatch</a>
+{% endif %}
+
+{% endblock %

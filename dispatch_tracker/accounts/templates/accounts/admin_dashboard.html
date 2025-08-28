@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<h3>Clients</h3>
+<ul>
+{% for client in clients %}
+    <li>{{ client.name }} - <a href="{% url 'edit_client' client.id %}">Edit</a></li>
+{% endfor %}
+</ul>
+
+<h3>Drivers</h3>
+<ul>
+{% for driver in drivers %}
+    <li>{{ driver.user.get_full_name }} - <a href="{% url 'driver_edit_profile' %}">Edit</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

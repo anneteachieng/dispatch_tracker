@@ -1,12 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = "clients"
+app_name = 'clients'  # allows using namespaced URLs
 
 urlpatterns = [
-    path('', views.client_list, name='client_list'),
-    path('create/', views.client_create, name='client_create'),
-    path('<int:pk>/', views.client_detail, name='client_detail'),
-    path('<int:pk>/update/', views.client_update, name='client_update'),
-    path('<int:pk>/delete/', views.client_delete, name='client_delete'),
+    path('<int:pk>/update/', views.profile_update, name='client_update'),
+    # optional success page route
+    path('update-success/', views.update_success, name='client_update_success'),
 ]

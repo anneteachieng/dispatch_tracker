@@ -1,9 +1,16 @@
 from django.contrib import admin
-from .models import CustomUser
+from django.contrib.auth.admin import UserAdmin
+from accounts.models import CustomUser, Client, Driver
 
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'role', 'is_staff', 'is_active')
-    list_filter = ('role', 'is_staff', 'is_active')
-    search_fields = ('username', 'email')
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ('username', 'email', 'role', 'is_staff', 'is_superuser')
 
-admin.site.register(CustomUser)
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone', 'location')
+
+@admin.register(Driver)
+class DriverAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone')

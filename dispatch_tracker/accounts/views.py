@@ -1,43 +1,35 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
-import logging
+from django.shortcuts import render
+from accounts.models import Client, Driver
 
-logger = logging.getLogger(__name__)
 
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            logger.info(f"Authenticated user: {user.username}, is_active: {user.is_active}, role: {getattr(user, 'role', 'N/A')}")
-            login(request, user)
-            next_url = request.GET.get('next', 'dispatch_list')
-            if next_url == '/':
-                next_url = redirect_dashboard(request)
-            logger.info(f"Redirecting to: {next_url}")
-            return redirect(next_url)
-        else:
-            logger.error(f"Form errors: {form.errors}")
-            print(f"Form errors: {form.errors}")
+# Demo user class
+class DemoUser:
+    def __init__(self, role):
+        self.role = role
+
+# Demo dashboard view
+def dashboard(request):
+    # 'admin', 'staff', 'driver', 'client'
+    demo_role = 'admin'  
+    user = DemoUser(demo_role)
+    context = {}
+
+    if user.role == 'admin':
+        context['clients'] = ['Client 1', 'Client 2']  # dummy data
+        context['drivers'] = ['Driver 1', 'Driver 2']
+        return render(request, 'accounts/admin_dashboard.html', context)
+
+    elif user.role == 'staff':
+        context['clients'] = ['Client 1', 'Client 2']
+        return render(request, 'accounts/staff_dashboard.html', context)
+
+    elif user.role == 'driver':
+        context['driver'] = {'name': 'Driver 1'}
+        return render(request, 'accounts/driver_dashboard.html', context)
+
+    elif user.role == 'client':
+        context['client'] = {'name': 'Client 1'}
+        return render(request, 'accounts/client_dashboard.html', context)
+
     else:
-        form = AuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
-
-@login_required
-def redirect_dashboard(request):
-    user = request.user
-    role = getattr(user, 'role', '')
-    if user.is_superuser or role == 'staff':
-        return '/admin/'  # Admin/staff go to admin panel
-    elif role == 'client':
-        return '/dispatches/'  # Clients view dispatches only
-    elif role == 'driver':
-        return '/dispatches/'  # Drivers view dispatches only
-    else:
-        return '/accounts/login/'
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+        return render(request, 'accounts/welcome.html')

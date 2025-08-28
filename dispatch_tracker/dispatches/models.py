@@ -1,6 +1,6 @@
 from django.db import models
-from clients.models import Client
-from drivers.models import Driver
+from accounts.models import Client
+from accounts.models import Driver
 
 
 class Dispatch(models.Model):
