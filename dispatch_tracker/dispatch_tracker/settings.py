@@ -76,6 +76,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dispatch_tracker.wsgi.application'
 
+#logins
+LOGIN_REDIRECT_URL = '/redirect-dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

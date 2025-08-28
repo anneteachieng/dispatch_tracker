@@ -7,7 +7,7 @@ from .forms import DispatchForm
 
 def staff_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role in ['admin', 'staff']:
+        if request.user.is_authenticated and request.user.role in ['admin', 'staff', 'client', 'driver']:
             return view_func(request, *args, **kwargs)
         return redirect('login')
     return wrapper
