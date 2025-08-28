@@ -1,22 +1,17 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-<h1>Drivers</h1>
-<a href="{% url 'driver_create' %}">Add Driver</a>
-<table>
-    <tr><th>Username</th><th>Email</th><th>Phone</th><th>License Plate</th><th>Actions</th></tr>
+  <h2>Drivers</h2>
+  <ul>
     {% for driver in drivers %}
-    <tr>
-        <td>{{ driver.user.username }}</td>
-        <td>{{ driver.user.email }}</td>
-        <td>{{ driver.phone }}</td>
-        <td>{{ driver.license_plate }}</td>
-        <td>
-            <a href="{% url 'driver_detail' driver.pk %}">View</a> |
-            <a href="{% url 'driver_update' driver.pk %}">Edit</a> |
-            <a href="{% url 'driver_delete' driver.pk %}">Delete</a>
-        </td>
-    </tr>
+      <li>
+        {{ driver.name }} – {{ driver.license_number }}
+        {% if request.user.role in 'admin staff' %}
+          <a href="{% url 'driver_edit' driver.id %}">Edit</a>
+          <a href="{% url 'driver_delete' driver.id %}">Delete</a>
+        {% elif request.user.role == 'driver' and driver.user == request.user %}
+          <a href="{% url 'driver_detail' driver.id %}">View Profile</a>
+        {% endif %}
+      </li>
     {% endfor %}
-</table>
+  </ul>
 {% endblock %}
