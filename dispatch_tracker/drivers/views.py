@@ -1,28 +1,39 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Driver
+from .forms import DriverForm
 
-# Check roles
-def is_admin_or_staff(user):
-    return user.role in ['admin', 'staff']
-
-@login_required
 def driver_list(request):
-    if request.user.role in ['admin', 'staff']:
-        drivers = Driver.objects.all()   # Admin/Staff see all
-    elif request.user.role == 'driver':
-        drivers = Driver.objects.filter(user=request.user)  # Driver sees self
-    else:
-        drivers = Driver.objects.none()  # Clients shouldn’t see drivers
-    return render(request, 'drivers/list.html', {'drivers': drivers})
+    drivers = Driver.objects.all()
+    return render(request, 'drivers/driver_list.html', {'drivers': drivers})
 
-
-@login_required
 def driver_detail(request, pk):
-    if request.user.role in ['admin', 'staff']:
-        driver = get_object_or_404(Driver, pk=pk)
-    elif request.user.role == 'driver':
-        driver = get_object_or_404(Driver, user=request.user, pk=pk)  # Only own profile
+    driver = get_object_or_404(Driver, pk=pk)
+    return render(request, 'drivers/driver_detail.html', {'driver': driver})
+
+def driver_create(request):
+    if request.method == "POST":
+        form = DriverForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('drivers:driver_list')
     else:
-        return render(request, '403.html')  # Forbidden
-    return render(request, 'drivers/detail.html', {'driver': driver})
+        form = DriverForm()
+    return render(request, 'drivers/driver_form.html', {'form': form})
+
+def driver_update(request, pk):
+    driver = get_object_or_404(Driver, pk=pk)
+    if request.method == "POST":
+        form = DriverForm(request.POST, instance=driver)
+        if form.is_valid():
+            form.save()
+            return redirect('drivers:driver_list')
+    else:
+        form = DriverForm(instance=driver)
+    return render(request, 'drivers/driver_form.html', {'form': form})
+
+def driver_delete(request, pk):
+    driver = get_object_or_404(Driver, pk=pk)
+    if request.method == "POST":
+        driver.delete()
+        return redirect('drivers:driver_list')
+    return render(request, 'drivers/driver_delete.html', {'driver': driver})

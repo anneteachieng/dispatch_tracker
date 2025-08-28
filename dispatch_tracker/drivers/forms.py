@@ -4,4 +4,4 @@ from .models import Driver
 class DriverForm(forms.ModelForm):
     class Meta:
         model = Driver
-        fiels = ["user", "phone", "license_plate"]
+        fields = ["user", "phone", "license_plate"]

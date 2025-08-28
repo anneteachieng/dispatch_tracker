@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Driver Details</h2>
+
+  <p><strong>Name:</strong> {{ driver.name }}</p>
+  <p><strong>Email:</strong> {{ driver.email }}</p>
+  <p><strong>Phone:</strong> {{ driver.phone }}</p>
+  <p><strong>License Number:</strong> {{ driver.license_number }}</p>
+  <p><strong>Status:</strong> {{ driver.status }}</p>
+
+  <a href="{% url 'driver_edit' driver.id %}">Edit</a> |
+  <a href="{% url 'driver_delete' driver.id %}">Delete</a> |
+  <a href="{% url 'driver_list' %}">Back to List</a>
+{% endblock %}
