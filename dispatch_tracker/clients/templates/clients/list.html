@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Client List</h1>
-<p>No clients available.</p>
+{% if clients %}
+  {% for client in clients %}
+    <p>{{ client }}</p>
+  {% endfor %}
+{% else %}
+  <p>No clients available.</p>
+{% endif %}
 {% endblock %}

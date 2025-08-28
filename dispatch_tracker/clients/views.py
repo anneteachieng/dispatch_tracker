@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
+from .models import Client
 
 @login_required
 def client_list(request):
-    return render(request, 'clients/list.html', {'clients': []})
+    clients = Client.objects.all()
+    return render(request, 'clients/list.html', {'clients': clients})

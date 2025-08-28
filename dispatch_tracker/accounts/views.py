@@ -28,14 +28,13 @@ def login_view(request):
 @login_required
 def redirect_dashboard(request):
     user = request.user
-    if user.is_superuser:
-        return '/admin/'
-    elif getattr(user, 'role', '') == 'client':
-        return '/clients/'
-    elif getattr(user, 'role', '') == 'driver':
-        return '/drivers/'
-    elif getattr(user, 'role', '') == 'staff':
-        return '/dispatches/'
+    role = getattr(user, 'role', '')
+    if user.is_superuser or role == 'staff':
+        return '/admin/'  # Admin/staff go to admin panel
+    elif role == 'client':
+        return '/dispatches/'  # Clients view dispatches only
+    elif role == 'driver':
+        return '/dispatches/'  # Drivers view dispatches only
     else:
         return '/accounts/login/'
 
