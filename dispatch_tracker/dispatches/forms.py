@@ -7,4 +7,3 @@ class DispatchForm(forms.ModelForm):
     class Meta:
         model = Dispatch
         fields = ['client', 'driver', 'pickup_location', 'dropoff_location', 'status']
-    driver = forms.ModelChoiceField(queryset=Driver.objects.all(), required=False)

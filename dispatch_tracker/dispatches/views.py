@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Dispatch  # Assuming a Dispatch model
+from .models import Dispatch  # Ensure this model exists
 
 def staff_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -11,7 +11,7 @@ def staff_required(view_func):
 
 @login_required
 def dispatch_list(request):
-    dispatches = Dispatch.objects.all()
+    dispatches = Dispatch.objects.all()  # Ensure Dispatch model is migrated
     return render(request, 'dispatches/list.html', {'dispatches': dispatches})
 
 @login_required
