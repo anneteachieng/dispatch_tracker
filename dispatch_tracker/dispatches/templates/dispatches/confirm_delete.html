@@ -1,0 +1,7 @@
+<h1>Delete Dispatch</h1>
+<p>Are you sure you want to delete "{{ dispatch }}"?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Yes, delete</button>
+  <a href="{% url 'dispatch_list' %}">Cancel</a>
+</form>

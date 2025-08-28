@@ -1,24 +1,11 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>Client List</h1>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Location</th>
-    </tr>
-    {% for client in clients %}
-    <tr>
-        <td>{{ client.user.username }}</td>
-        <td>{{ client.phone }}</td>
-        <td>{{ client.location }}</td>
-        <td><a href="{% url 'client_detail' client.pk %}">View</a></td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="4">No clients available.</td></tr>
-    {% endfor %}
-</table>
-{% if request.user.role in ['admin', 'staff'] %}
-<a href="{% url 'client_create' %}">Create Client</a>
-{% endif %}
-{% endblock %}
+<h2>Clients</h2>
+<a href="{% url 'client_create' %}">+ Add Client</a>
+<ul>
+  {% for client in clients %}
+    <li>
+      {{ client.name }} ({{ client.email }})
+      <a href="{% url 'client_update' client.pk %}">Edit</a> |
+      <a href="{% url 'client_delete' client.pk %}">Delete</a>
+    </li>
+  {% endfor %}
+</ul>

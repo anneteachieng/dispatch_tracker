@@ -1,26 +1,19 @@
-{% extends "base.html" %}
-
-{% block content %}
-  <h1>Dispatch List</h1>
-
-  {% if request.user.role == "admin" or request.user.role == "staff" %}
-      <!-- Admins & Staff: Can create dispatches -->
-      <a href="{% url 'dispatch_create' %}">Create Dispatch</a>
-
-  {% elif request.user.role == "client" %}
-      <!-- Clients: Cannot create, show message -->
-      <p class="text-gray-500">Clients cannot create dispatches.</p>
-
-  {% elif request.user.role == "driver" %}
-      <!-- Drivers: Cannot create, show message -->
-      <p class="text-gray-500">Drivers cannot create dispatches.</p>
-  {% endif %}
-
-  <ul>
-    {% for dispatch in dispatches %}
-      <li>{{ dispatch.name }}</li>
-    {% empty %}
-      <li>No dispatches available.</li>
-    {% endfor %}
-  </ul>
-{% endblock %}
+<h1>Dispatches</h1>
+<a href="{% url 'dispatch_create' %}">+ New Dispatch</a>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Description</th>
+    <th>Actions</th>
+  </tr>
+  {% for d in dispatches %}
+  <tr>
+    <td>{{ d.id }}</td>
+    <td>{{ d.description }}</td>
+    <td>
+      <a href="{% url 'dispatch_update' d.id %}">Edit</a>
+      <a href="{% url 'dispatch_delete' d.id %}">Delete</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

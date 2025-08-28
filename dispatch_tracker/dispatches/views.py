@@ -1,27 +1,48 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Dispatch  # Ensure this model exists
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .models import Dispatch
+from .forms import DispatchForm
 
-def staff_required(view_func):
-    def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role in ['admin', 'staff']:
-            return view_func(request, *args, **kwargs)
-        return redirect('login')
-    return wrapper
+# check if user is admin/staff
+def is_admin_or_staff(user):
+    return user.role in ['admin', 'staff']
 
 @login_required
+@user_passes_test(is_admin_or_staff)
 def dispatch_list(request):
-    dispatches = Dispatch.objects.all()  # Ensure Dispatch model is migrated
-    return render(request, 'dispatches/list.html', {'dispatches': dispatches})
+    dispatches = Dispatch.objects.all()
+    return render(request, "dispatches/list.html", {"dispatches": dispatches})
 
 @login_required
-@staff_required
+@user_passes_test(is_admin_or_staff)
 def dispatch_create(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DispatchForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('dispatch_list')
+            return redirect("dispatch_list")
     else:
         form = DispatchForm()
-    return render(request, 'dispatches/create.html', {'form': form})
+    return render(request, "dispatches/form.html", {"form": form})
+
+@login_required
+@user_passes_test(is_admin_or_staff)
+def dispatch_update(request, pk):
+    dispatch = get_object_or_404(Dispatch, pk=pk)
+    if request.method == "POST":
+        form = DispatchForm(request.POST, instance=dispatch)
+        if form.is_valid():
+            form.save()
+            return redirect("dispatch_list")
+    else:
+        form = DispatchForm(instance=dispatch)
+    return render(request, "dispatches/form.html", {"form": form})
+
+@login_required
+@user_passes_test(is_admin_or_staff)
+def dispatch_delete(request, pk):
+    dispatch = get_object_or_404(Dispatch, pk=pk)
+    if request.method == "POST":
+        dispatch.delete()
+        return redirect("dispatch_list")
+    return render(request, "dispatches/confirm_delete.html", {"dispatch": dispatch})
