@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Dispatches{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Dispatches</h2>
+
+  <form method="get" style="display:flex;gap:.5rem;margin-bottom:1rem;align-items:center;">
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search client/driver/pickup/dropoff..." />
+    <select name="status">
+      <option value="">All statuses</option>
+      <option value="PENDING" {% if request.GET.status == "PENDING" %}selected{% endif %}>Pending</option>
+      <option value="IN_TRANSIT" {% if request.GET.status == "IN_TRANSIT" %}selected{% endif %}>In Transit</option>
+      <option value="DELIVERED" {% if request.GET.status == "DELIVERED" %}selected{% endif %}>Delivered</option>
+      <option value="FAILED" {% if request.GET.status == "FAILED" %}selected{% endif %}>Failed</option>
+    </select>
+    <button class="btn" type="submit">Filter</button>
+    <a class="btn" href="{% url 'dispatches:create' %}">+ New Dispatch</a>
+    <a class="btn" href="{% url 'dispatches:export' %}?q={{ request.GET.q|urlencode }}&status={{ request.GET.status|urlencode }}">Export CSV</a>
+  </form>
+
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">ID</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Client</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Driver</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Pickup</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Dropoff</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Status</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in dispatches %}
+      <tr>
+        <td style="padding:.5rem;">#{{ d.id }}</td>
+        <td style="padding:.5rem;">{{ d.client.user.username }}</td>
+        <td style="padding:.5rem;">{% if d.driver %}{{ d.driver.user.username }}{% else %}—{% endif %}</td>
+        <td style="padding:.5rem;">{{ d.pickup_location }}</td>
+        <td style="padding:.5rem;">{{ d.dropoff_location }}</td>
+        <td style="padding:.5rem;">
+          {% if d.status == 'PENDING' %}
+            <span class="badge badge-pending">Pending</span>
+          {% elif d.status == 'IN_TRANSIT' %}
+            <span class="badge badge-intransit">In Transit</span>
+          {% elif d.status == 'DELIVERED' %}
+            <span class="badge badge-delivered">Delivered</span>
+          {% elif d.status == 'FAILED' %}
+            <span class="badge badge-failed">Failed</span>
+          {% endif %}
+        </td>
+        <td style="padding:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <a class="btn" href="{% url 'dispatches:detail' d.pk %}">View</a>
+          <a class="btn" href="{% url 'dispatches:edit' d.pk %}">Edit</a>
+          <a class="btn" href="{% url 'dispatches:delete' d.pk %}">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="padding:.75rem;">No dispatches.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+  <div style="margin-top:1rem;display:flex;gap:.5rem;align-items:center;">
+    {% if page_obj.has_previous %}
+      <a class="btn" href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q|urlencode }}&status={{ request.GET.status|urlencode }}">Prev</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a class="btn" href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q|urlencode }}&status={{ request.GET.status|urlencode }}">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}My Dispatches{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>My Dispatches</h2>
+
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">ID</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Pickup</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Dropoff</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Status</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">When</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in dispatches %}
+      <tr>
+        <td style="padding:.5rem;">#{{ d.id }}</td>
+        <td style="padding:.5rem;">{{ d.pickup_location }}</td>
+        <td style="padding:.5rem;">{{ d.dropoff_location }}</td>
+        <td style="padding:.5rem;">{{ d.get_status_display }}</td>
+        <td style="padding:.5rem;">{{ d.dispatch_time|date:"Y-m-d H:i" }}</td>
+        <td style="padding:.5rem;">
+          {% if user.role == 'DRIVER' %}
+            {% if d.status == 'PENDING' %}
+              <a class="btn" href="{% url 'dispatches:driver-status' d.pk %}">Start</a>
+            {% elif d.status == 'IN_TRANSIT' %}
+              <a class="btn" href="{% url 'dispatches:driver-status' d.pk %}">Complete</a>
+            {% else %}
+              —
+            {% endif %}
+          {% else %}
+            <a class="btn" href="#">View</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" style="padding:.75rem;">No dispatches.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+  <div style="margin-top:1rem;display:flex;gap:.5rem;align-items:center;">
+    {% if page_obj.has_previous %}
+      <a class="btn" href="?page={{ page_obj.previous_page_number }}">Prev</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a class="btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

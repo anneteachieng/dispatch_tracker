@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dispatch #{{ dispatch.id }}{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;">
+    <h2 style="margin:0;">Dispatch #{{ dispatch.id }}</h2>
+    <a class="btn" href="{% url 'dispatches:list' %}">← Back</a>
+  </div>
+
+  <p><b>Client:</b> {{ dispatch.client.user.username }}</p>
+  <p><b>Driver:</b> {% if dispatch.driver %}{{ dispatch.driver.user.username }}{% else %}—{% endif %}</p>
+  <p><b>Pickup:</b> {{ dispatch.pickup_location }}</p>
+  <p><b>Dropoff:</b> {{ dispatch.dropoff_location }}</p>
+
+  <p><b>Status:</b>
+    {% if dispatch.status == 'PENDING' %}
+      <span class="badge badge-pending">Pending</span>
+    {% elif dispatch.status == 'IN_TRANSIT' %}
+      <span class="badge badge-intransit">In Transit</span>
+    {% elif dispatch.status == 'DELIVERED' %}
+      <span class="badge badge-delivered">Delivered</span>
+    {% elif dispatch.status == 'FAILED' %}
+      <span class="badge badge-failed">Failed</span>
+    {% endif %}
+  </p>
+
+  <p><b>Dispatched:</b> {{ dispatch.dispatch_time|date:"Y-m-d H:i" }}</p>
+  {% if dispatch.delivered_at %}
+    <p><b>Delivered:</b> {{ dispatch.delivered_at|date:"Y-m-d H:i" }}</p>
+  {% endif %}
+  {% if dispatch.notes %}
+    <p><b>Notes:</b> {{ dispatch.notes }}</p>
+  {% endif %}
+
+  <p style="margin-top:1rem;">
+    <a class="btn" href="{% url 'dispatches:edit' dispatch.pk %}">Edit</a>
+    <a class="btn" href="{% url 'dispatches:delete' dispatch.pk %}">Delete</a>
+  </p>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <h3 style="margin-top:0;">Status History</h3>
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">When</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Changed By</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">From</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">To</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in dispatch.history.all %}
+        <tr>
+          <td style="padding:.5rem;">{{ h.changed_at|date:"Y-m-d H:i" }}</td>
+          <td style="padding:.5rem;">{{ h.changed_by.username|default:"system" }}</td>
+          <td style="padding:.5rem;">{{ h.get_old_status_display }}</td>
+          <td style="padding:.5rem;">{{ h.get_new_status_display }}</td>
+          <td style="padding:.5rem;">{{ h.note|default:"—" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" style="padding:.75rem;">No history yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+{% block content %}
+  <div class="card"><h2>404 — Page not found</h2>
+    <p>Haiwezi kupatikana. (We couldn’t find that page.)</p>
+    <p><a class="btn" href="{% url 'home' %}">Home</a></p>
+  </div>
+{% endblock %}
