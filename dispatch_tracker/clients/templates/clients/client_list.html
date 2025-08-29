@@ -1,11 +1,11 @@
 <h2>Clients</h2>
-<a href="{% url 'client_create' %}">+ Add Client</a>
+<a href="{% url 'clients:client_create' %}">+ Add Client</a>
 <ul>
   {% for client in clients %}
     <li>
       {{ client.name }} ({{ client.email }})
-      <a href="{% url 'client_update' client.pk %}">Edit</a> |
-      <a href="{% url 'client_delete' client.pk %}">Delete</a>
+      <a href="{% url 'clients:client_update' client.pk %}">Edit</a> |
+      <a href="{% url 'clients:client_delete' client.pk %}">Delete</a>
     </li>
   {% endfor %}
 </ul>

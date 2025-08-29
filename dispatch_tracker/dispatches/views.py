@@ -7,25 +7,21 @@ from .forms import DispatchForm
 def is_admin_or_staff(user):
     return user.role in ['admin', 'staff']
 
-@login_required
-@user_passes_test(is_admin_or_staff)
 def dispatch_list(request):
     dispatches = Dispatch.objects.all()
-    return render(request, "dispatches/list.html", {"dispatches": dispatches})
+    return render(request, "dispatches/dispatch_list.html", {"dispatches": dispatches})
 
-@login_required
 @user_passes_test(is_admin_or_staff)
 def dispatch_create(request):
     if request.method == "POST":
         form = DispatchForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("dispatch_list")
+            return redirect("dispatches:dispatch_list")
     else:
         form = DispatchForm()
-    return render(request, "dispatches/form.html", {"form": form})
+    return render(request, "dispatches/dispatch_form.html", {"form": form})
 
-@login_required
 @user_passes_test(is_admin_or_staff)
 def dispatch_update(request, pk):
     dispatch = get_object_or_404(Dispatch, pk=pk)
@@ -33,16 +29,15 @@ def dispatch_update(request, pk):
         form = DispatchForm(request.POST, instance=dispatch)
         if form.is_valid():
             form.save()
-            return redirect("dispatch_list")
+            return redirect("dispatches:dispatch_list")
     else:
         form = DispatchForm(instance=dispatch)
-    return render(request, "dispatches/form.html", {"form": form})
+    return render(request, "dispatches/dispatch_form.html", {"form": form})
 
-@login_required
 @user_passes_test(is_admin_or_staff)
 def dispatch_delete(request, pk):
     dispatch = get_object_or_404(Dispatch, pk=pk)
     if request.method == "POST":
         dispatch.delete()
-        return redirect("dispatch_list")
-    return render(request, "dispatches/confirm_delete.html", {"dispatch": dispatch})
+        return redirect("dispatches:dispatch_list")
+    return render(request, "dispatches/dispatch_delete.html", {"dispatch": dispatch})
