@@ -1,43 +1,50 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-import logging
+from django.contrib.auth import logout
+from dispatches.models import Dispatch
+from drivers.models import Driver
+from clients.models import Client
+from .forms import UserUpdateForm
 
-logger = logging.getLogger(__name__)
-
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            logger.info(f"Authenticated user: {user.username}, is_active: {user.is_active}, role: {getattr(user, 'role', 'N/A')}")
-            login(request, user)
-            next_url = request.GET.get('next', 'dispatch_list')
-            if next_url == '/':
-                next_url = redirect_dashboard(request)
-            logger.info(f"Redirecting to: {next_url}")
-            return redirect(next_url)
-        else:
-            logger.error(f"Form errors: {form.errors}")
-            print(f"Form errors: {form.errors}")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
-
+# DISPATCH LIST
 @login_required
-def redirect_dashboard(request):
-    user = request.user
-    role = getattr(user, 'role', '')
-    if user.is_superuser or role == 'staff':
-        return '/admin/'  # Admin/staff go to admin panel
-    elif role == 'client':
-        return '/dispatches/'  # Clients view dispatches only
-    elif role == 'driver':
-        return '/dispatches/'  # Drivers view dispatches only
-    else:
-        return '/accounts/login/'
+def dispatch_list(request):
+    """All roles can view dispatches."""
+    dispatches = Dispatch.objects.all()
+    return render(request, 'dispatches/list.html', {'dispatches': dispatches})
 
+# DRIVER LIST (admin/staff only)
+@login_required
+def driver_list(request):
+    if request.user.role not in ['admin', 'staff']:
+        return redirect('dispatches:dispatch_list')
+    drivers = Driver.objects.all()
+    return render(request, 'drivers/driver_list.html', {'drivers': drivers})
+
+# CLIENT LIST (admin/staff only)
+@login_required
+def client_list(request):
+    if request.user.role not in ['admin', 'staff']:
+        return redirect('dispatches:dispatch_list')
+    clients = Client.objects.all()
+    return render(request, 'clients/client_list.html', {'clients': clients})
+
+# PROFILE UPDATE (client/driver can only edit own profile)
+@login_required
+def profile_update(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.user.role in ['client', 'driver'] and request.user.pk != user.pk:
+        return redirect('dispatches:dispatch_list')
+    if request.user.role in ['admin', 'staff']:
+        pass  # admin/staff can edit anyone if needed
+    form = UserUpdateForm(request.POST or None, instance=user)
+    if form.is_valid():
+        form.save()
+        return redirect('dispatches:dispatch_list')
+    return render(request, 'accounts/profile_form.html', {'form': form})
+
+# LOGOUT
+@login_required
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('accounts:login')
