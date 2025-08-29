@@ -1,10 +1,19 @@
+from __future__ import annotations
 from django.db import models
-from accounts.models import CustomUser
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Driver(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=20)
-    license_plate = models.CharField(max_length=20)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="driver_profile")
+    phone = models.CharField(max_length=32)
+    license_plate = models.CharField(max_length=20, unique=True)
 
-    def __str__(self):
-        return self.user.username
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Driver({self.user.username})"

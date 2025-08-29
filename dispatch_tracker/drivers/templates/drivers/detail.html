@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Driver Details{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Driver: {{ driver.user.get_full_name|default:driver.user.username }}</h2>
+  <p><b>Username:</b> {{ driver.user.username }}</p>
+  <p><b>Email:</b> {{ driver.user.email|default:"—" }}</p>
+  <p><b>Phone:</b> {{ driver.phone|default:"—" }}</p>
+  <p><b>License Plate:</b> {{ driver.license_plate }}</p>
+  {% if user.role == 'ADMIN' or user.role == 'STAFF' %}
+    <p style="margin-top:1rem;">
+      <a class="btn" href="{% url 'drivers:edit' driver.pk %}">Edit</a>
+      <a class="btn" href="{% url 'drivers:delete' driver.pk %}">Delete</a>
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

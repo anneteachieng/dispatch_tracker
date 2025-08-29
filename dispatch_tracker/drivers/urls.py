@@ -1,12 +1,16 @@
 from django.urls import path
-from . import views
-from accounts.views import profile_update
+from .views import (
+    DriverListView, DriverCreateView, DriverUpdateView, DriverDeleteView,
+    DriverDetailView, my_driver_profile
+)
 
-app_name = 'drivers'
+app_name = "drivers"
 
 urlpatterns = [
-    path('', views.driver_list, name='driver_list'),
-    path('<int:pk>/update/', views.driver_update, name='driver_update'),
-    path('<int:pk>/delete/', views.driver_update, name='driver_delete'),
-    path('<int:pk>/create/', views.driver_create, name='driver_create'),
+    path("", DriverListView.as_view(), name="list"),
+    path("new/", DriverCreateView.as_view(), name="create"),
+    path("<int:pk>/", DriverDetailView.as_view(), name="detail"),
+    path("<int:pk>/edit/", DriverUpdateView.as_view(), name="edit"),
+    path("<int:pk>/delete/", DriverDeleteView.as_view(), name="delete"),
+    path("me/", my_driver_profile, name="me"),
 ]

@@ -1,39 +1,75 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from accounts.models import Driver
-from accounts.models import DriverForm
+from __future__ import annotations
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-def driver_list(request):
-    drivers = Driver.objects.all()
-    return render(request, 'drivers/driver_list.html', {'drivers': drivers})
+from accounts.roles import RoleRequiredMixin
+from .forms import DriverCreateForm, DriverUpdateForm
+from .models import Driver
 
-def driver_detail(request, pk):
-    driver = get_object_or_404(Driver, pk=pk)
-    return render(request, 'drivers/driver_detail.html', {'driver': driver})
+class DriverListView(RoleRequiredMixin, ListView):
+    allowed_roles = ("ADMIN", "STAFF")
+    model = Driver
+    template_name = "drivers/list.html"
+    context_object_name = "drivers"
+    paginate_by = 10
 
-def driver_create(request):
-    if request.method == "POST":
-        form = DriverForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('drivers:driver_list')
-    else:
-        form = DriverForm()
-    return render(request, 'drivers/driver_form.html', {'form': form})
+    def get_queryset(self):
+        qs = super().get_queryset().select_related("user")
+        q = self.request.GET.get("q")
+        if q:
+            qs = qs.filter(
+                Q(user__username__icontains=q) |
+                Q(user__email__icontains=q) |
+                Q(phone__icontains=q) |
+                Q(license_plate__icontains=q)
+            )
+        return qs
 
-def driver_update(request, pk):
-    driver = get_object_or_404(Driver, pk=pk)
-    if request.method == "POST":
-        form = DriverForm(request.POST, instance=driver)
-        if form.is_valid():
-            form.save()
-            return redirect('drivers:driver_list')
-    else:
-        form = DriverForm(instance=driver)
-    return render(request, 'drivers/driver_form.html', {'form': form})
+class DriverCreateView(RoleRequiredMixin, CreateView):
+    allowed_roles = ("ADMIN", "STAFF")
+    form_class = DriverCreateForm
+    template_name = "drivers/form.html"
+    success_url = reverse_lazy("drivers:list")
 
-def driver_delete(request, pk):
-    driver = get_object_or_404(Driver, pk=pk)
-    if request.method == "POST":
-        driver.delete()
-        return redirect('drivers:driver_list')
-    return render(request, 'drivers/driver_delete.html', {'driver': driver})
+    def form_valid(self, form):
+        messages.success(self.request, "Driver created successfully.")
+        return super().form_valid(form)
+
+class DriverUpdateView(RoleRequiredMixin, UpdateView):
+    allowed_roles = ("ADMIN", "STAFF")
+    model = Driver
+    form_class = DriverUpdateForm
+    template_name = "drivers/form.html"
+    success_url = reverse_lazy("drivers:list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Driver updated successfully.")
+        return super().form_valid(form)
+
+class DriverDeleteView(RoleRequiredMixin, DeleteView):
+    allowed_roles = ("ADMIN", "STAFF")
+    model = Driver
+    template_name = "drivers/confirm_delete.html"
+    success_url = reverse_lazy("drivers:list")
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Driver deleted.")
+        return super().delete(request, *args, **kwargs)
+
+class DriverDetailView(RoleRequiredMixin, DetailView):
+    allowed_roles = ("ADMIN", "STAFF")
+    model = Driver
+    template_name = "drivers/detail.html"
+    context_object_name = "driver"
+
+@login_required
+def my_driver_profile(request):
+    if getattr(request.user, "role", None) != "DRIVER":
+        return redirect("accounts:redirect-dashboard")
+    driver = get_object_or_404(Driver, user=request.user)
+    return render(request, "drivers/detail.html", {"driver": driver})
