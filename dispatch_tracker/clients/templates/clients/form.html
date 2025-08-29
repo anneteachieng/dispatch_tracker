@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Client Form{% endblock %}
+{% block content %}
+<div class="card" style="max-width:720px;margin:0 auto;">
+  <h2 style="margin-bottom:.75rem;">{% if form.instance.pk %}Edit Client{% else %}New Client{% endif %}</h2>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="form-errors" style="background:#fff3f3;border:1px solid #ffd0d0;color:#b01e2f;border-radius:10px;padding:.75rem;margin-bottom:1rem;">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {# Render all visible fields with labels #}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      {% for field in form.visible_fields %}
+      <div>
+        <label style="display:block;font-weight:600;margin-bottom:.35rem;">{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div style="margin-top:1rem;">
+      <button class="btn btn-primary" type="submit">Save</button>
+      <a class="btn" href="{% url 'clients:list' %}" style="margin-left:.5rem;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

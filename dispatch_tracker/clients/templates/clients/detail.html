@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Client Details{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Client: {{ client.user.get_full_name|default:client.user.username }}</h2>
+  <p><b>Username:</b> {{ client.user.username }}</p>
+  <p><b>Email:</b> {{ client.user.email|default:"—" }}</p>
+  <p><b>Phone:</b> {{ client.phone|default:"—" }}</p>
+  <p><b>Company:</b> {{ client.company_name|default:"—" }}</p>
+  <p><b>Contact person:</b> {{ client.contact_person|default:"—" }}</p>
+  <p><b>Location:</b> {{ client.location|default:"—" }}</p>
+  {% if user.role == "ADMIN" or user.role == "STAFF" %}
+    <p style="margin-top:1rem;">
+      <a class="btn" href="{% url 'clients:edit' client.pk %}">Edit</a>
+      <a class="btn" href="{% url 'clients:delete' client.pk %}">Delete</a>
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

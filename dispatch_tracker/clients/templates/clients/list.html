@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Clients{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Clients</h2>
+
+  <form method="get" style="display:flex;gap:.5rem;margin-bottom:1rem;align-items:center;">
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search username/email/phone/company..." />
+    <button class="btn" type="submit">Filter</button>
+    <a class="btn" href="{% url 'clients:create' %}">+ New Client</a>
+  </form>
+
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Username</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Name</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Email</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Phone</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Company</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Location</th>
+        <th style="text-align:left;border-bottom:1px solid #eee;padding:.5rem;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in clients %}
+      <tr>
+        <td style="padding:.5rem;">{{ c.user.username }}</td>
+        <td style="padding:.5rem;">{{ c.user.get_full_name|default:"—" }}</td>
+        <td style="padding:.5rem;">{{ c.user.email|default:"—" }}</td>
+        <td style="padding:.5rem;">{{ c.phone|default:"—" }}</td>
+        <td style="padding:.5rem;">{{ c.company_name|default:"—" }}</td>
+        <td style="padding:.5rem;">{{ c.location|default:"—" }}</td>
+        <td style="padding:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <a class="btn" href="{% url 'clients:detail' c.pk %}">View</a>
+          <a class="btn" href="{% url 'clients:edit' c.pk %}">Edit</a>
+          <a class="btn" href="{% url 'clients:delete' c.pk %}">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="padding:.75rem;">No clients found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+  <div style="margin-top:1rem;display:flex;gap:.5rem;align-items:center;">
+    {% if page_obj.has_previous %}
+      <a class="btn" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Prev</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a class="btn" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
