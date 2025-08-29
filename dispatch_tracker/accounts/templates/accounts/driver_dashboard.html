@@ -1,6 +1,0 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>Driver Dashboard</h2>
-<p>Welcome, {{ driver.user.get_full_name }}</p>
-<a href="{% url 'driver_edit_profile' %}">Edit Profile</a>
-{% endblock %}

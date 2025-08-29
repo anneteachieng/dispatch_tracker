@@ -1,9 +1,9 @@
 from django.contrib import admin
-from django.urls import path
-from accounts.views import dashboard
+from django.urls import path, include
+from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', dashboard, name='dashboard'),  # root shows dashboard
+    path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
+    path("", TemplateView.as_view(template_name="home.html"), name="home"),
 ]
-

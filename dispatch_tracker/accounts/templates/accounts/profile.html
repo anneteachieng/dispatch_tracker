@@ -1,0 +1,16 @@
+{# templates/accounts/profile.html #}
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>My Profile</h2>
+  <p><b>Username:</b> {{ user.username }}</p>
+  <p><b>Name:</b> {{ user.get_full_name|default:"—" }}</p>
+  <p><b>Email:</b> {{ user.email|default:"—" }}</p>
+  <p><b>Role:</b> {{ user.get_role_display }}</p>
+  <p>
+    <a class="btn" href="{% url 'accounts:profile-edit' %}">Edit</a>
+    <a class="btn" href="{% url 'accounts:password_change' %}">Change Password</a>
+  </p>
+</div>
+{% endblock %}
