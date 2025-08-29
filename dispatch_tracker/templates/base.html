@@ -1,14 +1,31 @@
-{% if request.user.is_authenticated %}
-    <a href="{% url 'accounts:logout' %}">Logout</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dispatch Tracker</title>
+</head>
+<body>
+    <nav>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'accounts:logout' %}">Logout</a>
 
-    {% if request.user.role in 'admin staff' %}
-        <a href="{% url 'clients:client_list' %}">Clients</a>
-        <a href="{% url 'drivers:driver_list' %}">Drivers</a>
-        <a href="{% url 'dispatches:dispatch_list' %}">Dispatches</a>
-    {% elif request.user.role == 'client' or request.user.role == 'driver' %}
-        <a href="{% url 'dispatches:dispatch_list' %}">Dispatches</a>
-        <a href="{% url 'accounts:profile_update' request.user.id %}">My Profile</a>
-    {% endif %}
-{% else %}
-    <a href="{% url 'accounts:login' %}">Login</a>
-{% endif %}
+            {% if request.user.role in 'admin staff' %}
+                <a href="{% url 'clients:client_list' %}">Clients</a>
+                <a href="{% url 'drivers:driver_list' %}">Drivers</a>
+                <a href="{% url 'dispatches:dispatch_list' %}">Dispatches</a>
+            {% elif request.user.role == 'client' or request.user.role == 'driver' %}
+                <a href="{% url 'dispatches:dispatch_list' %}">Dispatches</a>
+                <a href="{% url 'accounts:profile_update' request.user.id %}">My Profile</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+        {% endif %}
+    </nav>
+
+    <hr>
+
+    {% block content %}
+    <!-- Each page will inject content here -->
+    {% endblock %}
+</body>
+</html>

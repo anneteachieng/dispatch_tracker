@@ -35,7 +35,7 @@
 </table>
 
 {% if request.user.role in 'admin staff' %}
-<a href="{% url 'drivers:driver_create' %}">Add New Driver</a>
+<a href="{% url 'driver_create' %}">Add New Driver</a>
 {% endif %}
 
 {% endblock %}

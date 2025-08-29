@@ -1,41 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Dispatches</h1>
-
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Description</th>
-            <th>Status</th>
-            {% if request.user.role in 'admin staff' %}
-                <th>Actions</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
+<h1>Dispatch List</h1>
+<table border="1">
+    <tr>
+        <th>Client</th>
+        <th>Driver</th>
+        <th>Pickup</th>
+        <th>Dropoff</th>
+        <th>Status</th>
+        <th>Time</th>
+        <th>Actions</th>
+    </tr>
+    {% if dispatches %}
         {% for dispatch in dispatches %}
         <tr>
-            <td>{{ dispatch.id }}</td>
-            <td>{{ dispatch.description }}</td>
+            <td>{{ dispatch.client.username|default:"N/A" }}</td>
+            <td>{{ dispatch.driver.username|default:"Unassigned" }}</td>
+            <td>{{ dispatch.pickup_location }}</td>
+            <td>{{ dispatch.dropoff_location }}</td>
             <td>{{ dispatch.status }}</td>
-            {% if request.user.role in 'admin staff' %}
-            <td>
-                <a href="{% url 'dispatches:dispatch_update' dispatch.id %}">Edit</a>
-                <a href="{% url 'dispatches:dispatch_delete' dispatch.id %}">Delete</a>
-            </td>
-            {% endif %}
+            <td>{{ dispatch.dispatch_time|date:"Y-m-d H:i" }}</td>
+            <td><a href="{% url 'dispatch_detail' dispatch.pk %}">View</a></td>
         </tr>
         {% empty %}
-        <tr>
-            <td colspan="4">No dispatches found.</td>
-        </tr>
+        <tr><td colspan="7">No dispatches available.</td></tr>
         {% endfor %}
-    </tbody>
+    {% else %}
+        <tr><td colspan="7">No dispatches available.</td></tr>
+    {% endif %}
+    {% if request.user.role == 'admin' or request.user.role == 'staff' %}
+    <p><a href="{% url 'dispatch_create' %}">Create Dispatch</a></p>
+    {% endif %}
 </table>
-
-{% if request.user.role in 'admin staff' %}
-<a href="{% url 'dispatches:dispatch_create' %}">Add New Dispatch</a>
-{% endif %}
-
 {% endblock %}
