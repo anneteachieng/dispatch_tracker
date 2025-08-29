@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Assignments</title>
+</head>
+<body>
+    <h1>My Assignments</h1>
+    
+    <p>Welcome, {{ user.username }}! Below are your current assignments:</p>
+
+    {% if assignments %}
+        <ul>
+            {% for assignment in assignments %}
+                <li>{{ assignment.name }} - {{ assignment.status }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no current assignments.</p>
+    {% endif %}
+</body>
+</html>
+

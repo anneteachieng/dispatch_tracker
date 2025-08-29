@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>My Dispatches</h2>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Pickup</th>
+    <th>Dropoff</th>
+    <th>Status</th>
+    <th>Date</th>
+  </tr>
+  {% for d in dispatches %}
+  <tr>
+    <td>{{ d.id }}</td>
+    <td>{{ d.pickup_location }}</td>
+    <td>{{ d.dropoff_location }}</td>
+    <td>{{ d.status }}</td>
+    <td>{{ d.dispatch_date }}</td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="5">No dispatches found.</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
+

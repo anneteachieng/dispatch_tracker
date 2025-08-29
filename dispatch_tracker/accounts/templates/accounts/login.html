@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+<style>
+  .auth-form { margin-top: .5rem; }
+  .auth-form .form-errors {
+    background: #fff3f3; border: 1px solid #ffd0d0; color: #b01e2f;
+    border-radius: 10px; padding: .75rem; margin-bottom: 1rem;
+  }
+  .auth-form .form-field { margin-bottom: 1rem; }
+  .auth-form label { display: block; font-weight: 600; margin-bottom: .35rem; }
+  .auth-form .label-row { display: flex; justify-content: space-between; align-items: center; }
+  .auth-form .remember { display: flex; gap: .5rem; align-items: center; margin: .5rem 0 1rem; }
+  .auth-form .actions { display: flex; gap: .75rem; align-items: center; }
+  .auth-form .forgot { font-size: .9rem; text-decoration: none; }
+  .auth-form .forgot:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:420px;margin:0 auto;">
+  <h2>Sign in</h2>
+<form method="post" novalidate class="auth-form">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div class="form-errors">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  {# Username field #}
+  <div class="form-field">
+    <label for="{{ form.username.id_for_label }}">Username</label>
+    {{ form.username }}
+    {{ form.username.errors }}
+  </div>
+
+  {# Password field + Forgot link #}
+  <div class="form-field">
+    <div class="label-row">
+      <label for="{{ form.password.id_for_label }}">Password</label>
+      <a class="forgot" href="{% url 'accounts:password_reset' %}">Forgot password?</a>
+    </div>
+    {{ form.password }}
+    {{ form.password.errors }}
+  </div>
+
+  <label class="remember">
+    <input type="checkbox" name="remember" /> Remember me
+  </label>
+
+  <div class="actions">
+    <button class="btn btn-primary" type="submit">Login</button>
+  </div>
+
+  <input type="hidden" name="next" value="{{ request.GET.next }}">
+</form>
+</div>
+{% endblock %}
