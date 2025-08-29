@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-app_name = 'clients'  # allows using namespaced URLs
+app_name = 'clients'
 
 urlpatterns = [
     path('<int:pk>/update/', views.profile_update, name='client_update'),
